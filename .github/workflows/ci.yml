@@ -13,15 +13,6 @@ jobs:
     name: Build and Test Application
     runs-on: ubuntu-latest
 
-    services:
-      mongo:
-        image: mongo:4.4.3
-        ports:
-          - 27017:27017
-        options: >
-          --logpath /dev/null
-          --smallfiles
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3

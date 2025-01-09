@@ -1,0 +1,42 @@
+name: Java CI with MongoDB
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build and Test Application
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo:4.4.3
+        ports:
+          - 27017:27017
+        options: >
+          --logpath /dev/null
+          --smallfiles
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Wait for MongoDB
+        run: |
+          echo "Waiting for MongoDB to be ready..."
+          sleep 10
+
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots clean verify

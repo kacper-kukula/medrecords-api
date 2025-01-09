@@ -1,19 +1,20 @@
 package com.example.medrecordsapi.service;
 
 import com.example.medrecordsapi.model.DrugRecord;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface DrugRecordService {
 
-    void saveDrugRecord(DrugRecord drugRecord);
+    DrugRecord saveDrugRecord(DrugRecord drugRecord);
 
-    void findByApplicationNumber(String applicationNumber);
+    DrugRecord findByApplicationNumber(String applicationNumber);
 
-    void findAllDrugRecords();
+    Page<DrugRecord> findAllByManufacturerName(String manufacturerName, Pageable pageable);
 
-    void findByManufacturerName(String manufacturerName, Pageable pageable);
+    Page<DrugRecord> findAllBySubstanceName(String substanceName, Pageable pageable);
 
-    void findBySubstanceName(String substanceName, Pageable pageable);
+    Page<DrugRecord> findAllByProductNumbersContaining(String productNumber, Pageable pageable);
 
-    void findByProductNumbersContaining(String productNumber, Pageable pageable);
+    Page<DrugRecord> findAllDrugRecords(Pageable pageable);
 }

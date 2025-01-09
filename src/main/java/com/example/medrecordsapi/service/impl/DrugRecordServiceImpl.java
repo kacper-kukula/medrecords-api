@@ -4,6 +4,7 @@ import com.example.medrecordsapi.model.DrugRecord;
 import com.example.medrecordsapi.repository.DrugRecordRepository;
 import com.example.medrecordsapi.service.DrugRecordService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -14,33 +15,40 @@ public class DrugRecordServiceImpl implements DrugRecordService {
     private DrugRecordRepository drugRecordRepository;
 
     @Override
-    public void saveDrugRecord(DrugRecord drugRecord) {
-        drugRecordRepository.save(drugRecord);
+    public DrugRecord saveDrugRecord(DrugRecord drugRecord) {
+        DrugRecord savedDrugRecord = drugRecordRepository.save(drugRecord);
+
+        return savedDrugRecord;
+
     }
 
     @Override
-    public void findByApplicationNumber(String applicationNumber) {
-        drugRecordRepository.findByApplicationNumber(applicationNumber);
+    public DrugRecord findByApplicationNumber(String applicationNumber) {
+        return drugRecordRepository.findByApplicationNumber(applicationNumber)
+                .orElseThrow(() -> new RuntimeException("Not Found"));
     }
 
     @Override
-    public void findAllDrugRecords() {
-        drugRecordRepository.findAll();
+    public Page<DrugRecord> findAllByManufacturerName(
+            String manufacturerName, Pageable pageable) {
+        return drugRecordRepository.findByManufacturerName(manufacturerName, pageable);
     }
 
     @Override
-    public void findByManufacturerName(String manufacturerName, Pageable pageable) {
-        drugRecordRepository.findByManufacturerName(manufacturerName, pageable);
+    public Page<DrugRecord> findAllBySubstanceName(
+            String substanceName, Pageable pageable) {
+        return drugRecordRepository.findBySubstanceName(substanceName, pageable);
     }
 
     @Override
-    public void findBySubstanceName(String substanceName, Pageable pageable) {
-        drugRecordRepository.findBySubstanceName(substanceName, pageable);
+    public Page<DrugRecord> findAllByProductNumbersContaining(
+            String productNumber, Pageable pageable) {
+        return drugRecordRepository.findByProductNumbersContaining(productNumber, pageable);
+
     }
 
     @Override
-    public void findByProductNumbersContaining(String productNumber, Pageable pageable) {
-        drugRecordRepository.findByProductNumbersContaining(productNumber, pageable);
-
+    public Page<DrugRecord> findAllDrugRecords(Pageable pageable) {
+        return drugRecordRepository.findAll(pageable);
     }
 }

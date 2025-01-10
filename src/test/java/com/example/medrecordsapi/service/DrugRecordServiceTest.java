@@ -37,18 +37,14 @@ public class DrugRecordServiceTest {
 
     @Test
     public void testSaveDrugRecord() {
-        // Arrange
         DrugRecord validDrugRecord = new DrugRecord("12345", "Greenfield Laboratories",
                 "Aspirin", List.of("PN12345", "PN12346", "PN12347"));
         when(drugRecordRepository.save(validDrugRecord)).thenReturn(validDrugRecord);
 
-        // Act
         DrugRecord actual = drugRecordService.saveDrugRecord(validDrugRecord);
 
-        // Assert
         verify(drugRecordRepository, times(1)).save(validDrugRecord);
         assertThat(actual).isEqualTo(validDrugRecord);
-
     }
 
     @Test

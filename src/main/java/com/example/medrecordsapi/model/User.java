@@ -2,14 +2,17 @@ package com.example.medrecordsapi.model;
 
 import java.util.Collection;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Data
+@AllArgsConstructor
 @Document(collection = "users")
 public class User implements UserDetails {
 
@@ -17,12 +20,17 @@ public class User implements UserDetails {
 
     @Id
     private String id;
+
+    @Indexed(unique = true)
     private String email;
     private String password;
     private String firstName;
     private String lastName;
     private Role role;
-    private Boolean isDeleted = false;
+    private boolean enabled;
+    private boolean accountNonExpired;
+    private boolean accountNonLocked;
+    private boolean credentialsNonExpired;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -41,21 +49,21 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return !isDeleted;
+        return accountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return !isDeleted;
+        return accountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return !isDeleted;
+        return credentialsNonExpired;
     }
 
     @Override
     public boolean isEnabled() {
-        return !isDeleted;
+        return enabled;
     }
 }

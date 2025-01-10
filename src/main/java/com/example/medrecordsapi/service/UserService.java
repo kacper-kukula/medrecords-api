@@ -1,8 +1,11 @@
 package com.example.medrecordsapi.service;
 
-import com.example.medrecordsapi.model.User;
+import com.example.medrecordsapi.dto.UserRegistrationRequestDto;
+import com.example.medrecordsapi.dto.UserResponseDto;
+import com.example.medrecordsapi.exception.RegistrationException;
 
 public interface UserService {
 
-    void register(User user);
+    UserResponseDto registerUser(UserRegistrationRequestDto requestDto)
+            throws RegistrationException;
 }

@@ -2,7 +2,7 @@ package com.example.medrecordsapi.service.impl;
 
 import com.example.medrecordsapi.dto.UserRegistrationRequestDto;
 import com.example.medrecordsapi.dto.UserResponseDto;
-import com.example.medrecordsapi.exception.RegistrationException;
+import com.example.medrecordsapi.exception.custom.RegistrationException;
 import com.example.medrecordsapi.mapper.UserMapper;
 import com.example.medrecordsapi.model.Role;
 import com.example.medrecordsapi.model.User;

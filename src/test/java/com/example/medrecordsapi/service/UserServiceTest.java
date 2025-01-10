@@ -8,19 +8,17 @@ import static org.mockito.Mockito.when;
 
 import com.example.medrecordsapi.dto.UserRegistrationRequestDto;
 import com.example.medrecordsapi.dto.UserResponseDto;
-import com.example.medrecordsapi.exception.RegistrationException;
+import com.example.medrecordsapi.exception.custom.RegistrationException;
 import com.example.medrecordsapi.mapper.UserMapper;
 import com.example.medrecordsapi.model.Role;
 import com.example.medrecordsapi.model.User;
 import com.example.medrecordsapi.repository.UserRepository;
 import com.example.medrecordsapi.service.impl.UserServiceImpl;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -38,11 +36,6 @@ public class UserServiceTest {
 
     @InjectMocks
     private UserServiceImpl userService;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     public void testRegisterUserUser() throws RegistrationException {

@@ -1,4 +1,4 @@
-package com.example.medrecordsapi.exception;
+package com.example.medrecordsapi.exception.custom;
 
 public class RegistrationException extends Exception {
 

@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto registerUser(UserRegistrationRequestDto requestDto)
             throws RegistrationException {
-        if (userRepository.findByEmail(requestDto.email()).isPresent()) {
+        if (userRepository.findByEmailIgnoreCase(requestDto.email()).isPresent()) {
             throw new RegistrationException("Can't register this user.");
         }
 

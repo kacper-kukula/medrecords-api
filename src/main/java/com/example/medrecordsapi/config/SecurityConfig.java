@@ -29,8 +29,8 @@ public class SecurityConfig {
             "/error"
     };
 
-    private UserDetailsService userDetailsService;
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final UserDetailsService userDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {

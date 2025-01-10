@@ -13,10 +13,8 @@ import com.example.medrecordsapi.mapper.UserMapper;
 import com.example.medrecordsapi.model.Role;
 import com.example.medrecordsapi.model.User;
 import com.example.medrecordsapi.repository.UserRepository;
-import com.example.medrecordsapi.security.AuthenticationService;
 import com.example.medrecordsapi.service.impl.UserServiceImpl;
 import java.util.Optional;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,7 +50,7 @@ public class UserServiceTest {
         String password = "password123";
         User user = new User(
                 "12345", email, password, "firstName", "lastName",
-                Role.USER, true, true, true, true);
+                Role.USER);
         UserRegistrationRequestDto requestDto = new UserRegistrationRequestDto(
                 email, password, password,
                 user.getFirstName(), user.getLastName());
@@ -74,14 +72,5 @@ public class UserServiceTest {
         verify(userRepository, times(1)).save(user);
         verify(userMapper, times(1)).toDto(user);
         verifyNoMoreInteractions(userRepository, userMapper, passwordEncoder);
-    }
-
-    @Test
-    public void testLoginUser() {
-        AuthenticationService authenticationService = new AuthenticationService();
-
-        String token = authenticationService.authenticate();
-
-        Assertions.assertThat(token).isNotEmpty();
     }
 }

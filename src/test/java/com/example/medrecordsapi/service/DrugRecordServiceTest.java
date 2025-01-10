@@ -10,12 +10,11 @@ import com.example.medrecordsapi.repository.DrugRecordRepository;
 import com.example.medrecordsapi.service.impl.DrugRecordServiceImpl;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -30,13 +29,9 @@ public class DrugRecordServiceTest {
     @InjectMocks
     private DrugRecordServiceImpl drugRecordService;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
-    public void testSaveDrugRecord() {
+    @DisplayName("Test saving a drug record")
+    public void saveDrugRecord_ValidDrugRecord_ReturnsSavedDrugRecord() {
         DrugRecord validDrugRecord = new DrugRecord("12345", "Greenfield Laboratories",
                 "Aspirin", List.of("PN12345", "PN12346", "PN12347"));
         when(drugRecordRepository.save(validDrugRecord)).thenReturn(validDrugRecord);
@@ -48,7 +43,8 @@ public class DrugRecordServiceTest {
     }
 
     @Test
-    public void testFindByApplicationNumber() {
+    @DisplayName("Test finding a drug record by application number")
+    public void findByApplicationNumber_ValidApplicationNumber_ReturnsDrugRecord() {
         String applicationNumber = "67890";
         DrugRecord validDrugRecord = new DrugRecord(applicationNumber, "Sunridge Pharma",
                 "Paracetamol", List.of("PN67890", "PN67891", "PN67892"));
@@ -62,7 +58,8 @@ public class DrugRecordServiceTest {
     }
 
     @Test
-    public void testFindAllByManufacturerName() {
+    @DisplayName("Test finding all drug records by manufacturer name")
+    public void findAllByManufacturerName_ValidManufacturerName_ReturnsDrugRecords() {
         String manufacturerName = "BlueMountain Meds";
         DrugRecord validDrugRecord = new DrugRecord("11223", manufacturerName,
                 "Ibuprofen", List.of("PN11223", "PN11224", "PN11225"));
@@ -80,7 +77,8 @@ public class DrugRecordServiceTest {
     }
 
     @Test
-    public void testFindAllBySubstanceName() {
+    @DisplayName("Test finding all drug records by substance name")
+    public void findAllBySubstanceName_ValidSubstanceName_ReturnsDrugRecords() {
         String substanceName = "Amoxicillin";
         DrugRecord validDrugRecord = new DrugRecord("22456", "Oakwood Biotech",
                 substanceName, List.of("PN22456", "PN22457", "PN22458"));
@@ -97,7 +95,8 @@ public class DrugRecordServiceTest {
     }
 
     @Test
-    public void testFindAllByProductNumbersContaining() {
+    @DisplayName("Test finding all drug records by product numbers containing specific number")
+    public void findAllByProductNumbersContaining_ValidProductNumber_ReturnsDrugRecords() {
         String productNumber = "PN33469";
         DrugRecord validDrugRecord = new DrugRecord("33467", "Silverline Therapeutics",
                 "Metformin", List.of("PN33467", "PN33468", productNumber));
@@ -116,7 +115,8 @@ public class DrugRecordServiceTest {
     }
 
     @Test
-    public void testFindAllDrugRecords() {
+    @DisplayName("Test finding all drug records")
+    public void findAll_ReturnsAllDrugRecords() {
         DrugRecord validDrugRecord1 = new DrugRecord("44578", "Redwood Health Co.",
                 "Atorvastatin", List.of("PN44578", "PN44579", "PN44580"));
         DrugRecord validDrugRecord2 = new DrugRecord("55689", "CrystalClear Pharma",

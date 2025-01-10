@@ -23,8 +23,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String TOKEN_PREFIX = "Bearer ";
     private static final int TOKEN_BEGIN_INDEX = 7;
 
-    private JwtUtil jwtUtil;
-    private UserDetailsService userDetailsService;
+    private final JwtUtil jwtUtil;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(

@@ -1,13 +1,12 @@
 package com.example.medrecordsapi.controller;
 
 import com.example.medrecordsapi.dto.drugrecord.DrugRecordResponseDto;
-import com.example.medrecordsapi.model.DrugRecord;
 import com.example.medrecordsapi.service.DrugRecordService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.validation.constraints.Positive;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,38 +32,21 @@ public class DrugRecordController {
         return drugRecordService.searchDrugRecords(manufacturerName, brandName, page, size);
     }
 
-    @GetMapping("/save")
+    @GetMapping("/save/{applicationNumber}")
     @ResponseStatus(HttpStatus.CREATED)
-    public DrugRecordResponseDto saveDrugRecord(@RequestParam String applicationNumber)
+    public DrugRecordResponseDto saveDrugRecord(@PathVariable String applicationNumber)
             throws JsonProcessingException {
         return drugRecordService.saveDrugRecord(applicationNumber);
     }
 
-    @GetMapping("/{applicationNumber}")
-    public DrugRecord getDrugRecordByApplicationNumber(@PathVariable String applicationNumber) {
-        return drugRecordService.findByApplicationNumber(applicationNumber);
-    }
-
-    @GetMapping("/manufacturer")
-    public Page<DrugRecord> getDrugRecordsByManufacturerName(
-            @RequestParam String manufacturerName, Pageable pageable) {
-        return drugRecordService.findAllByManufacturerName(manufacturerName, pageable);
-    }
-
-    @GetMapping("/substance")
-    public Page<DrugRecord> getDrugRecordsBySubstanceName(
-            @RequestParam String substanceName, Pageable pageable) {
-        return drugRecordService.findAllBySubstanceName(substanceName, pageable);
-    }
-
-    @GetMapping("/product-number")
-    public Page<DrugRecord> getDrugRecordsByProductNumbersContaining(
-            @RequestParam String productNumber, Pageable pageable) {
-        return drugRecordService.findAllByProductNumbersContaining(productNumber, pageable);
-    }
-
     @GetMapping
-    public Page<DrugRecord> getAllDrugRecords(Pageable pageable) {
-        return drugRecordService.findAllDrugRecords(pageable);
+    public List<DrugRecordResponseDto> getAllDrugRecords(Pageable pageable) {
+        return drugRecordService.getAllDrugRecords(pageable);
+    }
+
+    @GetMapping("/{applicationNumber}")
+    public DrugRecordResponseDto findDrugRecordByApplicationNumber(
+            @PathVariable String applicationNumber) {
+        return drugRecordService.findDrugRecordByApplicationNumber(applicationNumber);
     }
 }

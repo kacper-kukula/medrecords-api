@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private static final String REGISTRATION_FAIL_MESSAGE = "Can't register this user";
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
@@ -24,7 +26,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto registerUser(UserRegistrationRequestDto requestDto)
             throws RegistrationException {
         if (userRepository.findByEmailIgnoreCase(requestDto.email()).isPresent()) {
-            throw new RegistrationException("Can't register this user.");
+            throw new RegistrationException(REGISTRATION_FAIL_MESSAGE);
         }
 
         User user = userMapper.toModel(requestDto);

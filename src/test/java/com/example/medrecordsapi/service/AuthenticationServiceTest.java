@@ -36,7 +36,7 @@ public class AuthenticationServiceTest {
 
     @Test
     @DisplayName("Test login with valid credentials")
-    public void authenticate_ValidCredentials_ReturnsJwtToken() {
+    void authenticate_ValidCredentials_ReturnsJwtToken() {
         String token = "valid-jwt-token";
         String email = "valid@example.com";
         String password = "password123";

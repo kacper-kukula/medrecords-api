@@ -1,7 +1,6 @@
 package com.example.medrecordsapi.service.impl;
 
 import com.example.medrecordsapi.dto.drugrecord.DrugRecordResponseDto;
-import com.example.medrecordsapi.exception.custom.DrugRecordNotFoundException;
 import com.example.medrecordsapi.exception.custom.EntityNotFoundException;
 import com.example.medrecordsapi.mapper.DrugRecordMapper;
 import com.example.medrecordsapi.model.DrugRecord;
@@ -15,15 +14,11 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientResponseException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 @RequiredArgsConstructor
 public class DrugRecordServiceImpl implements DrugRecordService {
 
-    private static final String FDA_BASE_URL = "https://api.fda.gov/drug/drugsfda.json";
     private static final String MANUFACTURER_NAME_FIELD = "openfda.manufacturer_name:";
     private static final String BRAND_NAME_FIELD = "openfda.brand_name:";
     private static final String APPLICATION_NUMBER_FIELD = "openfda.application_number:";
@@ -32,20 +27,16 @@ public class DrugRecordServiceImpl implements DrugRecordService {
     private static final String PRODUCT_NDC_NODE_PATH = "product_ndc";
     private static final String MANUFACTURER_NAME_NODE_PATH = "manufacturer_name";
     private static final String SUBSTANCE_NAME_NODE_PATH = "substance_name";
-    private static final String API_KEY_PARAM_NAME = "api_key";
     private static final String SEARCH_PARAM_NAME = "search";
-    private static final String LIMIT_PARAM_NAME = "limit";
-    private static final String SKIP_PARAM_NAME = "skip";
     private static final String AND_OPERATOR = "+AND+";
     private static final int PAGE_SIZE_ONE = 1;
     private static final int INDEX_ZERO = 0;
     private static final String NO_DRUGS_FOUND_ERROR = "No drug records found";
 
     private final DrugRecordRepository drugRecordRepository;
-    private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final DrugRecordMapper drugRecordMapper;
-    private final String apiKey = System.getenv("FDA_API_KEY");
+    private final FdaApiService fdaApiService;
 
     @Override
     public JsonNode searchDrugRecords(String manufacturerName, String brandName,
@@ -60,14 +51,15 @@ public class DrugRecordServiceImpl implements DrugRecordService {
                     .append(brandName);
         }
 
-        String rawJson = fetchApiResponse(SEARCH_PARAM_NAME, searchQuery.toString(), page, size);
+        String rawJson = fdaApiService.fetchDrugData(
+                SEARCH_PARAM_NAME, searchQuery.toString(), page, size);
         return objectMapper.readTree(rawJson);
     }
 
     @Override
     public DrugRecordResponseDto saveDrugRecord(String applicationNumber)
             throws JsonProcessingException {
-        String rawJson = fetchApiResponse(APPLICATION_NUMBER_FIELD, applicationNumber,
+        String rawJson = fdaApiService.fetchDrugData(APPLICATION_NUMBER_FIELD, applicationNumber,
                 PAGE_SIZE_ONE, PAGE_SIZE_ONE);
 
         JsonNode rootNode = objectMapper.readTree(rawJson);
@@ -100,26 +92,5 @@ public class DrugRecordServiceImpl implements DrugRecordService {
         return drugRecordRepository.findByApplicationNumber(applicationNumber)
                 .map(drugRecordMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException(NO_DRUGS_FOUND_ERROR));
-    }
-
-    private String fetchApiResponse(String queryParam, String queryValue, int page, int size) {
-        UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(FDA_BASE_URL);
-
-        // Append as first parameter only if FDA Api Key is provided in the .env file
-        if (apiKey != null && !apiKey.isEmpty()) {
-            urlBuilder.queryParam(API_KEY_PARAM_NAME, apiKey);
-        }
-
-        String url = urlBuilder
-                .queryParam(SEARCH_PARAM_NAME, queryParam + queryValue)
-                .queryParam(LIMIT_PARAM_NAME, size) // Pagination limit
-                .queryParam(SKIP_PARAM_NAME, (page - PAGE_SIZE_ONE) * size) // Offset
-                .toUriString();
-
-        try {
-            return restTemplate.getForObject(url, String.class);
-        } catch (RestClientResponseException e) {
-            throw new DrugRecordNotFoundException(NO_DRUGS_FOUND_ERROR);
-        }
     }
 }

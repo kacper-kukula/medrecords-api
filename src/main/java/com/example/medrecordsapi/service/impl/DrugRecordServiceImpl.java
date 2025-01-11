@@ -53,7 +53,7 @@ public class DrugRecordServiceImpl implements DrugRecordService {
         }
 
         String rawJson = fdaApiService.fetchDrugData(
-                SEARCH_PARAM_NAME, searchQuery.toString(), page, size);
+                "", searchQuery.toString(), page, size);
         return objectMapper.readTree(rawJson);
     }
 

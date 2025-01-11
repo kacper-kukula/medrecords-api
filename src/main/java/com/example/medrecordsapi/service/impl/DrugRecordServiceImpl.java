@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
@@ -28,11 +27,19 @@ public class DrugRecordServiceImpl implements DrugRecordService {
     private static final String MANUFACTURER_NAME_FIELD = "openfda.manufacturer_name:";
     private static final String BRAND_NAME_FIELD = "openfda.brand_name:";
     private static final String APPLICATION_NUMBER_FIELD = "openfda.application_number:";
+    private static final String RESULTS_NODE_PATH = "results";
+    private static final String OPENFDA_NODE_PATH = "openfda";
+    private static final String PRODUCT_NDC_NODE_PATH = "product_ndc";
+    private static final String MANUFACTURER_NAME_NODE_PATH = "manufacturer_name";
+    private static final String SUBSTANCE_NAME_NODE_PATH = "substance_name";
     private static final String API_KEY_PARAM_NAME = "api_key";
     private static final String SEARCH_PARAM_NAME = "search";
     private static final String LIMIT_PARAM_NAME = "limit";
     private static final String SKIP_PARAM_NAME = "skip";
     private static final String AND_OPERATOR = "+AND+";
+    private static final int PAGE_SIZE_ONE = 1;
+    private static final int INDEX_ZERO = 0;
+    private static final String NO_DRUGS_FOUND_ERROR = "No drug records found";
 
     private final DrugRecordRepository drugRecordRepository;
     private final RestTemplate restTemplate;
@@ -43,53 +50,36 @@ public class DrugRecordServiceImpl implements DrugRecordService {
     @Override
     public JsonNode searchDrugRecords(String manufacturerName, String brandName,
                                       int page, int size) throws JsonProcessingException {
-        UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(FDA_BASE_URL);
         StringBuilder searchQuery = new StringBuilder()
                 .append(MANUFACTURER_NAME_FIELD)
                 .append(manufacturerName);
 
-        appendApiKeyIfExists(urlBuilder);
-        appendBrandNameIfExists(brandName, searchQuery);
+        if (brandName != null && !brandName.isEmpty()) {
+            searchQuery.append(AND_OPERATOR)
+                    .append(BRAND_NAME_FIELD)
+                    .append(brandName);
+        }
 
-        String url = urlBuilder.queryParam(SEARCH_PARAM_NAME, searchQuery.toString())
-                .queryParam(LIMIT_PARAM_NAME, size)
-                .queryParam(SKIP_PARAM_NAME, (page - 1) * size)
-                .toUriString();
-
-        String rawJson = restTemplate.getForObject(url, String.class);
-
+        String rawJson = fetchApiResponse(SEARCH_PARAM_NAME, searchQuery.toString(), page, size);
         return objectMapper.readTree(rawJson);
     }
 
     @Override
     public DrugRecordResponseDto saveDrugRecord(String applicationNumber)
             throws JsonProcessingException {
-        UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(FDA_BASE_URL);
-
-        String url = urlBuilder
-                .queryParam(SEARCH_PARAM_NAME, APPLICATION_NUMBER_FIELD + applicationNumber)
-                .toUriString();
-
-        String rawJson;
-
-        try {
-            rawJson = restTemplate.getForObject(url, String.class);
-        } catch (RestClientResponseException e) {
-            throw new DrugRecordNotFoundException(
-                    "No drug records found for the given Application Number: "
-                            + applicationNumber);
-        }
+        String rawJson = fetchApiResponse(APPLICATION_NUMBER_FIELD, applicationNumber,
+                PAGE_SIZE_ONE, PAGE_SIZE_ONE);
 
         JsonNode rootNode = objectMapper.readTree(rawJson);
-        JsonNode result = rootNode.path("results").get(0);
-        JsonNode openFda = result.path("openfda");
-
-        String manufacturerName = openFda.path("manufacturer_name").get(0).asText();
-        String substanceName = openFda.path("substance_name").get(0).asText();
+        JsonNode result = rootNode.path(RESULTS_NODE_PATH).get(INDEX_ZERO);
+        JsonNode openFda = result.path(OPENFDA_NODE_PATH);
+        String manufacturerName =
+                openFda.path(MANUFACTURER_NAME_NODE_PATH).get(INDEX_ZERO).asText();
+        String substanceName =
+                openFda.path(SUBSTANCE_NAME_NODE_PATH).get(INDEX_ZERO).asText();
 
         List<String> productNumbers = new ArrayList<>();
-
-        openFda.path("product_ndc").forEach(node -> productNumbers.add(node.asText()));
+        openFda.path(PRODUCT_NDC_NODE_PATH).forEach(node -> productNumbers.add(node.asText()));
 
         DrugRecord drugRecord = new DrugRecord(applicationNumber, manufacturerName,
                 substanceName, productNumbers);
@@ -99,46 +89,37 @@ public class DrugRecordServiceImpl implements DrugRecordService {
     }
 
     @Override
-    public DrugRecord findByApplicationNumber(String applicationNumber) {
+    public List<DrugRecordResponseDto> getAllDrugRecords(Pageable pageable) {
+        return drugRecordRepository.findAll(pageable).stream()
+                .map(drugRecordMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public DrugRecordResponseDto findDrugRecordByApplicationNumber(String applicationNumber) {
         return drugRecordRepository.findByApplicationNumber(applicationNumber)
-                .orElseThrow(() -> new EntityNotFoundException("Not Found"));
+                .map(drugRecordMapper::toDto)
+                .orElseThrow(() -> new EntityNotFoundException(NO_DRUGS_FOUND_ERROR));
     }
 
-    @Override
-    public Page<DrugRecord> findAllByManufacturerName(
-            String manufacturerName, Pageable pageable) {
-        return drugRecordRepository.findByManufacturerName(manufacturerName, pageable);
-    }
+    private String fetchApiResponse(String queryParam, String queryValue, int page, int size) {
+        UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(FDA_BASE_URL);
 
-    @Override
-    public Page<DrugRecord> findAllBySubstanceName(
-            String substanceName, Pageable pageable) {
-        return drugRecordRepository.findBySubstanceName(substanceName, pageable);
-    }
-
-    @Override
-    public Page<DrugRecord> findAllByProductNumbersContaining(
-            String productNumber, Pageable pageable) {
-        return drugRecordRepository.findByProductNumbersContaining(productNumber, pageable);
-
-    }
-
-    @Override
-    public Page<DrugRecord> findAllDrugRecords(Pageable pageable) {
-        return drugRecordRepository.findAll(pageable);
-    }
-
-    private void appendBrandNameIfExists(String brandName, StringBuilder searchQuery) {
-        if (brandName != null && !brandName.isEmpty()) {
-            searchQuery.append(AND_OPERATOR)
-                    .append(BRAND_NAME_FIELD)
-                    .append(brandName);
-        }
-    }
-
-    private void appendApiKeyIfExists(UriComponentsBuilder urlBuilder) {
+        // Append as first parameter only if FDA Api Key is provided in the .env file
         if (apiKey != null && !apiKey.isEmpty()) {
             urlBuilder.queryParam(API_KEY_PARAM_NAME, apiKey);
+        }
+
+        String url = urlBuilder
+                .queryParam(SEARCH_PARAM_NAME, queryParam + queryValue)
+                .queryParam(LIMIT_PARAM_NAME, size) // Pagination limit
+                .queryParam(SKIP_PARAM_NAME, (page - PAGE_SIZE_ONE) * size) // Offset
+                .toUriString();
+
+        try {
+            return restTemplate.getForObject(url, String.class);
+        } catch (RestClientResponseException e) {
+            throw new DrugRecordNotFoundException(NO_DRUGS_FOUND_ERROR);
         }
     }
 }

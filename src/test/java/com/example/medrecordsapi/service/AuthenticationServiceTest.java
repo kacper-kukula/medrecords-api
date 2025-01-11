@@ -7,8 +7,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.medrecordsapi.dto.UserLoginRequestDto;
-import com.example.medrecordsapi.dto.UserLoginResponseDto;
+import com.example.medrecordsapi.dto.user.UserLoginRequestDto;
+import com.example.medrecordsapi.dto.user.UserLoginResponseDto;
 import com.example.medrecordsapi.security.AuthenticationService;
 import com.example.medrecordsapi.security.JwtUtil;
 import org.junit.jupiter.api.DisplayName;

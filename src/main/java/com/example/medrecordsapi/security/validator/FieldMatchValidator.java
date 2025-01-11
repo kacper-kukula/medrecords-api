@@ -1,6 +1,6 @@
 package com.example.medrecordsapi.security.validator;
 
-import com.example.medrecordsapi.dto.UserRegistrationRequestDto;
+import com.example.medrecordsapi.dto.user.UserRegistrationRequestDto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

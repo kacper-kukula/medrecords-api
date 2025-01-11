@@ -1,7 +1,7 @@
 package com.example.medrecordsapi.service.impl;
 
-import com.example.medrecordsapi.dto.UserRegistrationRequestDto;
-import com.example.medrecordsapi.dto.UserResponseDto;
+import com.example.medrecordsapi.dto.user.UserRegistrationRequestDto;
+import com.example.medrecordsapi.dto.user.UserResponseDto;
 import com.example.medrecordsapi.exception.custom.RegistrationException;
 import com.example.medrecordsapi.mapper.UserMapper;
 import com.example.medrecordsapi.model.Role;
@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto registerUser(UserRegistrationRequestDto requestDto)
             throws RegistrationException {
-        if (userRepository.findByEmail(requestDto.email()).isPresent()) {
+        if (userRepository.findByEmailIgnoreCase(requestDto.email()).isPresent()) {
             throw new RegistrationException("Can't register this user.");
         }
 

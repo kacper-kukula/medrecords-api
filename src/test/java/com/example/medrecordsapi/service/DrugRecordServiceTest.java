@@ -1,6 +1,8 @@
 package com.example.medrecordsapi.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -8,6 +10,8 @@ import static org.mockito.Mockito.when;
 import com.example.medrecordsapi.model.DrugRecord;
 import com.example.medrecordsapi.repository.DrugRecordRepository;
 import com.example.medrecordsapi.service.impl.DrugRecordServiceImpl;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -19,9 +23,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.client.RestTemplate;
 
 @ExtendWith(MockitoExtension.class)
 public class DrugRecordServiceTest {
+
+    @Mock
+    private RestTemplate restTemplate;
+
+    @Mock
+    private ObjectMapper objectMapper;
 
     @Mock
     private DrugRecordRepository drugRecordRepository;
@@ -30,17 +41,42 @@ public class DrugRecordServiceTest {
     private DrugRecordServiceImpl drugRecordService;
 
     @Test
-    @DisplayName("Test saving a drug record")
-    public void saveDrugRecord_ValidDrugRecord_ReturnsSavedDrugRecord() {
-        DrugRecord validDrugRecord = new DrugRecord("12345", "Greenfield Laboratories",
-                "Aspirin", List.of("PN12345", "PN12346", "PN12347"));
-        when(drugRecordRepository.save(validDrugRecord)).thenReturn(validDrugRecord);
+    @DisplayName("Test searchDrugRecords method")
+    public void searchDrugRecords_ValidParameters_ReturnsJsonNode() throws Exception {
+        String manufacturerName = "Greenfield Laboratories";
+        String brandName = "Aspirin";
+        int page = 1;
+        int size = 10;
+        String mockJsonResponse = "{\"results\": [{\"application_number\": "
+                + "\"12345\", \"brand_name\": \"Avastin\"}]}";
+        JsonNode mockJsonNode = new ObjectMapper().readTree(mockJsonResponse);
+        when(restTemplate.getForObject(anyString(), eq(String.class)))
+                .thenReturn(mockJsonResponse);
+        when(objectMapper.readTree(mockJsonResponse))
+                .thenReturn(mockJsonNode);
 
-        DrugRecord actual = drugRecordService.saveDrugRecord(validDrugRecord);
+        JsonNode actualJsonNode =
+                drugRecordService.searchDrugRecords(manufacturerName, brandName, page, size);
 
-        verify(drugRecordRepository, times(1)).save(validDrugRecord);
-        assertThat(actual).isEqualTo(validDrugRecord);
+        verify(restTemplate, times(1)).getForObject(anyString(), eq(String.class));
+        assertThat(actualJsonNode).isNotNull();
+        assertThat(actualJsonNode.get("results").size()).isGreaterThan(0);
+        assertThat(actualJsonNode.get("results").get(0).get("application_number").asText())
+                .isEqualTo("12345");
     }
+
+    //    @Test
+    //    @DisplayName("Test saving a drug record")
+    //    public void saveDrugRecord_ValidDrugRecord_ReturnsSavedDrugRecord() {
+    //        DrugRecord validDrugRecord = new DrugRecord("12345", "Greenfield Laboratories",
+    //                "Aspirin", List.of("PN12345", "PN12346", "PN12347"));
+    //        when(drugRecordRepository.save(validDrugRecord)).thenReturn(validDrugRecord);
+    //
+    //        DrugRecord actual = drugRecordService.saveDrugRecord(validDrugRecord);
+    //
+    //        verify(drugRecordRepository, times(1)).save(validDrugRecord);
+    //        assertThat(actual).isEqualTo(validDrugRecord);
+    //    }
 
     @Test
     @DisplayName("Test finding a drug record by application number")

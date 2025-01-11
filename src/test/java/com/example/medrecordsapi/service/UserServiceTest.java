@@ -7,8 +7,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import com.example.medrecordsapi.dto.UserRegistrationRequestDto;
-import com.example.medrecordsapi.dto.UserResponseDto;
+import com.example.medrecordsapi.dto.user.UserRegistrationRequestDto;
+import com.example.medrecordsapi.dto.user.UserResponseDto;
 import com.example.medrecordsapi.exception.custom.RegistrationException;
 import com.example.medrecordsapi.mapper.UserMapper;
 import com.example.medrecordsapi.model.Role;
@@ -53,7 +53,7 @@ public class UserServiceTest {
         UserResponseDto expectedResponse = new UserResponseDto(
                 user.getId(), email, user.getFirstName(),
                 user.getLastName(), user.getRole());
-        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+        when(userRepository.findByEmailIgnoreCase(email)).thenReturn(Optional.empty());
         when(userMapper.toModel(requestDto)).thenReturn(user);
         when(passwordEncoder.encode(password)).thenReturn("encodedPassword");
         when(userRepository.save(user)).thenReturn(user);
@@ -62,7 +62,7 @@ public class UserServiceTest {
         UserResponseDto actualResponse = userService.registerUser(requestDto);
 
         assertThat(actualResponse).isEqualTo(expectedResponse);
-        verify(userRepository, times(1)).findByEmail(email);
+        verify(userRepository, times(1)).findByEmailIgnoreCase(email);
         verify(userMapper, times(1)).toModel(requestDto);
         verify(passwordEncoder, times(1)).encode(password);
         verify(userRepository, times(1)).save(user);
@@ -77,12 +77,12 @@ public class UserServiceTest {
         String password = "password123";
         UserRegistrationRequestDto requestDto = new UserRegistrationRequestDto(
                 email, password, password, "firstName", "lastName");
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
+        when(userRepository.findByEmailIgnoreCase(email)).thenReturn(Optional.of(new User()));
 
         assertThatThrownBy(() -> userService.registerUser(requestDto))
                 .isInstanceOf(RegistrationException.class);
 
-        verify(userRepository, times(1)).findByEmail(email);
+        verify(userRepository, times(1)).findByEmailIgnoreCase(email);
         verifyNoMoreInteractions(userRepository, userMapper, passwordEncoder);
     }
 
@@ -97,7 +97,7 @@ public class UserServiceTest {
         User user = new User("1", email, encodedPassword, "firstName", "lastName", Role.USER);
         UserResponseDto expectedResponse = new UserResponseDto(
                 "1", email, "firstName", "lastName", Role.USER);
-        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+        when(userRepository.findByEmailIgnoreCase(email)).thenReturn(Optional.empty());
         when(userMapper.toModel(requestDto)).thenReturn(user);
         when(passwordEncoder.encode(password)).thenReturn(encodedPassword);
         when(userRepository.save(user)).thenReturn(user);
@@ -107,7 +107,7 @@ public class UserServiceTest {
 
         assertThat(actualResponse.role()).isEqualTo(Role.USER);
         assertThat(user.getPassword()).isEqualTo(encodedPassword);
-        verify(userRepository, times(1)).findByEmail(email);
+        verify(userRepository, times(1)).findByEmailIgnoreCase(email);
         verify(userRepository, times(1)).save(user);
         verify(userMapper, times(1)).toDto(user);
         verify(passwordEncoder, times(1)).encode(password);

@@ -22,11 +22,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private static final String[] PUBLIC_PATHS = {
+    private static final String[] AUTH_WHITELIST = {
+            // Swagger v3
+            "/v3/api-docs/**",
             "/swagger-ui/**",
-            "/auth/**",
-            "/health",
-            "/error"
+            // other public
+            "/auth/**"
     };
 
     private final UserDetailsService userDetailsService;
@@ -44,7 +45,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers(PUBLIC_PATHS)
+                                .requestMatchers(AUTH_WHITELIST)
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()

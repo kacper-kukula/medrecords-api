@@ -6,6 +6,7 @@ import com.example.medrecordsapi.mapper.DrugRecordMapper;
 import com.example.medrecordsapi.model.DrugRecord;
 import com.example.medrecordsapi.repository.DrugRecordRepository;
 import com.example.medrecordsapi.service.DrugRecordService;
+import com.example.medrecordsapi.service.FdaApiService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

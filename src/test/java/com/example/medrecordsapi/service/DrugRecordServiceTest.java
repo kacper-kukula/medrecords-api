@@ -15,7 +15,6 @@ import com.example.medrecordsapi.mapper.DrugRecordMapper;
 import com.example.medrecordsapi.model.DrugRecord;
 import com.example.medrecordsapi.repository.DrugRecordRepository;
 import com.example.medrecordsapi.service.impl.DrugRecordServiceImpl;
-import com.example.medrecordsapi.service.impl.FdaApiService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -29,13 +28,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.client.RestTemplate;
 
 @ExtendWith(MockitoExtension.class)
 public class DrugRecordServiceTest {
-
-    @Mock
-    private RestTemplate restTemplate;
 
     @Mock
     private ObjectMapper objectMapper;

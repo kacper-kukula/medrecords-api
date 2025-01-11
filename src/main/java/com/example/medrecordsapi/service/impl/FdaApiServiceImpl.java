@@ -1,6 +1,7 @@
 package com.example.medrecordsapi.service.impl;
 
 import com.example.medrecordsapi.exception.custom.DrugRecordNotFoundException;
+import com.example.medrecordsapi.service.FdaApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
@@ -9,7 +10,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 @RequiredArgsConstructor
-public class FdaApiService {
+public class FdaApiServiceImpl implements FdaApiService {
 
     private static final String FDA_BASE_URL = "https://api.fda.gov/drug/drugsfda.json";
     private static final String API_KEY_PARAM_NAME = "api_key";

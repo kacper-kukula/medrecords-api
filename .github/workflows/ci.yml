@@ -12,6 +12,8 @@ jobs:
   build:
     name: Build and Test Application
     runs-on: ubuntu-latest
+    env:
+      JWT_SECRET_STRING: ${{ secrets.JWT_SECRET_STRING }}
 
     steps:
       - name: Checkout Code

@@ -21,8 +21,7 @@ public class JwtUtil {
     private long expirationMinutes;
     private final Key secret;
 
-    public JwtUtil(Dotenv dotenv) {
-        String secretString = dotenv.get("JWT_SECRET_STRING");
+    public JwtUtil(@Value("${jwt.secret}") String secretString) {
         secret = Keys.hmacShaKeyFor(secretString.getBytes(StandardCharsets.UTF_8));
     }
 

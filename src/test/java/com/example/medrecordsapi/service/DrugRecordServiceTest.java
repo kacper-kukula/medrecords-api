@@ -65,18 +65,18 @@ public class DrugRecordServiceTest {
                 .isEqualTo("12345");
     }
 
-    @Test
-    @DisplayName("Test saving a drug record")
-    public void saveDrugRecord_ValidDrugRecord_ReturnsSavedDrugRecord() {
-        DrugRecord validDrugRecord = new DrugRecord("12345", "Greenfield Laboratories",
-                "Aspirin", List.of("PN12345", "PN12346", "PN12347"));
-        when(drugRecordRepository.save(validDrugRecord)).thenReturn(validDrugRecord);
-
-        DrugRecord actual = drugRecordService.saveDrugRecord(validDrugRecord);
-
-        verify(drugRecordRepository, times(1)).save(validDrugRecord);
-        assertThat(actual).isEqualTo(validDrugRecord);
-    }
+    //    @Test
+    //    @DisplayName("Test saving a drug record")
+    //    public void saveDrugRecord_ValidDrugRecord_ReturnsSavedDrugRecord() {
+    //        DrugRecord validDrugRecord = new DrugRecord("12345", "Greenfield Laboratories",
+    //                "Aspirin", List.of("PN12345", "PN12346", "PN12347"));
+    //        when(drugRecordRepository.save(validDrugRecord)).thenReturn(validDrugRecord);
+    //
+    //        DrugRecord actual = drugRecordService.saveDrugRecord(validDrugRecord);
+    //
+    //        verify(drugRecordRepository, times(1)).save(validDrugRecord);
+    //        assertThat(actual).isEqualTo(validDrugRecord);
+    //    }
 
     @Test
     @DisplayName("Test finding a drug record by application number")

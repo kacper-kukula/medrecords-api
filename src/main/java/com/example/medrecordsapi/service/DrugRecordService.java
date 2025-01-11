@@ -1,5 +1,6 @@
 package com.example.medrecordsapi.service;
 
+import com.example.medrecordsapi.dto.drugrecord.DrugRecordResponseDto;
 import com.example.medrecordsapi.model.DrugRecord;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -11,7 +12,7 @@ public interface DrugRecordService {
     JsonNode searchDrugRecords(String manufacturerName, String brandName, int page, int size)
             throws JsonProcessingException;
 
-    DrugRecord saveDrugRecord(DrugRecord drugRecord);
+    DrugRecordResponseDto saveDrugRecord(String applicationNumber) throws JsonProcessingException;
 
     DrugRecord findByApplicationNumber(String applicationNumber);
 

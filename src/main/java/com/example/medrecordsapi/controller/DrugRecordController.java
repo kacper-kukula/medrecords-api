@@ -1,5 +1,6 @@
 package com.example.medrecordsapi.controller;
 
+import com.example.medrecordsapi.dto.drugrecord.DrugRecordResponseDto;
 import com.example.medrecordsapi.model.DrugRecord;
 import com.example.medrecordsapi.service.DrugRecordService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -34,10 +33,11 @@ public class DrugRecordController {
         return drugRecordService.searchDrugRecords(manufacturerName, brandName, page, size);
     }
 
-    @PostMapping
+    @GetMapping("/save")
     @ResponseStatus(HttpStatus.CREATED)
-    public DrugRecord saveDrugRecord(@RequestBody DrugRecord drugRecord) {
-        return drugRecordService.saveDrugRecord(drugRecord);
+    public DrugRecordResponseDto saveDrugRecord(@RequestParam String applicationNumber)
+            throws JsonProcessingException {
+        return drugRecordService.saveDrugRecord(applicationNumber);
     }
 
     @GetMapping("/{applicationNumber}")

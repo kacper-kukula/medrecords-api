@@ -27,9 +27,7 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             // other public
-            "/auth/**",
-            "/health",
-            "/error"
+            "/auth/**"
     };
 
     private final UserDetailsService userDetailsService;

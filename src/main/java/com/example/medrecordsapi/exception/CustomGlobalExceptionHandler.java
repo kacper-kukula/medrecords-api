@@ -1,8 +1,8 @@
 package com.example.medrecordsapi.exception;
 
+import com.example.medrecordsapi.exception.custom.DrugRecordNotFoundException;
 import com.example.medrecordsapi.exception.custom.EntityNotFoundException;
 import com.example.medrecordsapi.exception.custom.RegistrationException;
-import com.example.medrecordsapi.exception.custom.UnauthorizedViewException;
 import io.jsonwebtoken.ExpiredJwtException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -82,15 +82,15 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(UnauthorizedViewException.class)
-    public ResponseEntity<ErrorResponse> handleUnauthorizedViewException(
-            UnauthorizedViewException ex) {
+    @ExceptionHandler(DrugRecordNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleDrugRecordNotFoundException(
+            DrugRecordNotFoundException ex) {
         ErrorResponse body = new ErrorResponse(
                 LocalDateTime.now(),
-                HttpStatus.FORBIDDEN,
+                HttpStatus.NOT_FOUND,
                 List.of(ex.getMessage()));
 
-        return new ResponseEntity<>(body, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)

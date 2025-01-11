@@ -62,7 +62,8 @@ public class DrugRecordServiceImpl implements DrugRecordService {
     }
 
     @Override
-    public DrugRecordResponseDto saveDrugRecord(String applicationNumber) throws JsonProcessingException {
+    public DrugRecordResponseDto saveDrugRecord(String applicationNumber)
+            throws JsonProcessingException {
         UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(FDA_BASE_URL);
 
         String url = urlBuilder
@@ -74,8 +75,9 @@ public class DrugRecordServiceImpl implements DrugRecordService {
         try {
             rawJson = restTemplate.getForObject(url, String.class);
         } catch (RestClientResponseException e) {
-            throw new DrugRecordNotFoundException("No drug records found for the given Application Number: "
-                    + applicationNumber);
+            throw new DrugRecordNotFoundException(
+                    "No drug records found for the given Application Number: "
+                            + applicationNumber);
         }
 
         JsonNode rootNode = objectMapper.readTree(rawJson);

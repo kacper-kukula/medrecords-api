@@ -24,10 +24,15 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.11.0
+        with:
+          mongodb-version: '8.0'
+
       - name: Wait for MongoDB
         run: |
           echo "Waiting for MongoDB to be ready..."
-          sleep 10
+          sleep 15
 
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots clean verify

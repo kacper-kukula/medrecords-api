@@ -1,5 +1,6 @@
 package com.example.medrecordsapi.security;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -20,7 +21,8 @@ public class JwtUtil {
     private long expirationMinutes;
     private final Key secret;
 
-    public JwtUtil(@Value("${jwt.secret}") String secretString) {
+    public JwtUtil(Dotenv dotenv) {
+        String secretString = dotenv.get("JWT_SECRET_STRING");
         secret = Keys.hmacShaKeyFor(secretString.getBytes(StandardCharsets.UTF_8));
     }
 

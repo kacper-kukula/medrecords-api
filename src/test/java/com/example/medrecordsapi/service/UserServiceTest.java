@@ -7,8 +7,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import com.example.medrecordsapi.dto.UserRegistrationRequestDto;
-import com.example.medrecordsapi.dto.UserResponseDto;
+import com.example.medrecordsapi.dto.user.UserRegistrationRequestDto;
+import com.example.medrecordsapi.dto.user.UserResponseDto;
 import com.example.medrecordsapi.exception.custom.RegistrationException;
 import com.example.medrecordsapi.mapper.UserMapper;
 import com.example.medrecordsapi.model.Role;

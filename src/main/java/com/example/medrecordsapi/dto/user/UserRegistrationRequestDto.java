@@ -1,4 +1,4 @@
-package com.example.medrecordsapi.dto;
+package com.example.medrecordsapi.dto.user;
 
 import com.example.medrecordsapi.security.validator.FieldMatch;
 import jakarta.validation.constraints.Email;

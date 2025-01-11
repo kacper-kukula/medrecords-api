@@ -1,7 +1,7 @@
 package com.example.medrecordsapi.security;
 
-import com.example.medrecordsapi.dto.UserLoginRequestDto;
-import com.example.medrecordsapi.dto.UserLoginResponseDto;
+import com.example.medrecordsapi.dto.user.UserLoginRequestDto;
+import com.example.medrecordsapi.dto.user.UserLoginResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

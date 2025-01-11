@@ -2,6 +2,9 @@ package com.example.medrecordsapi.controller;
 
 import com.example.medrecordsapi.model.DrugRecord;
 import com.example.medrecordsapi.service.DrugRecordService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +24,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class DrugRecordController {
 
     private final DrugRecordService drugRecordService;
+
+    @GetMapping("/search")
+    public JsonNode searchDrugRecords(
+            @RequestParam String manufacturerName,
+            @RequestParam(required = false) String brandName,
+            @RequestParam(defaultValue = "1") @Positive int page,
+            @RequestParam(defaultValue = "10") @Positive int size) throws JsonProcessingException {
+        return drugRecordService.searchDrugRecords(manufacturerName, brandName, page, size);
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

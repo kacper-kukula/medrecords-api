@@ -4,9 +4,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.medrecordsapi.dto.UserLoginRequestDto;
-import com.example.medrecordsapi.dto.UserRegistrationRequestDto;
-import com.example.medrecordsapi.dto.UserResponseDto;
+import com.example.medrecordsapi.dto.user.UserLoginRequestDto;
+import com.example.medrecordsapi.dto.user.UserRegistrationRequestDto;
+import com.example.medrecordsapi.dto.user.UserResponseDto;
 import com.example.medrecordsapi.model.Role;
 import com.example.medrecordsapi.model.User;
 import com.example.medrecordsapi.repository.UserRepository;

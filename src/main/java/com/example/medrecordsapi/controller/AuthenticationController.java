@@ -1,9 +1,9 @@
 package com.example.medrecordsapi.controller;
 
-import com.example.medrecordsapi.dto.UserLoginRequestDto;
-import com.example.medrecordsapi.dto.UserLoginResponseDto;
-import com.example.medrecordsapi.dto.UserRegistrationRequestDto;
-import com.example.medrecordsapi.dto.UserResponseDto;
+import com.example.medrecordsapi.dto.user.UserLoginRequestDto;
+import com.example.medrecordsapi.dto.user.UserLoginResponseDto;
+import com.example.medrecordsapi.dto.user.UserRegistrationRequestDto;
+import com.example.medrecordsapi.dto.user.UserResponseDto;
 import com.example.medrecordsapi.exception.custom.RegistrationException;
 import com.example.medrecordsapi.security.AuthenticationService;
 import com.example.medrecordsapi.service.UserService;

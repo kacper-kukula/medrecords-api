@@ -1,0 +1,35 @@
+services:
+
+  mongodb:
+    image: mongo
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - "${MONGODB_LOCAL_PORT}:${MONGODB_DOCKER_PORT}"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGODB_DATABASE}
+    volumes:
+      - mongodb_data:/data/db
+
+  app:
+    depends_on:
+      - mongodb
+    restart: on-failure
+    image: medrecords-api
+    build: .
+    env_file: ./.env
+    ports:
+      - "${SPRING_LOCAL_PORT}:${SPRING_DOCKER_PORT}"
+      - "${DEBUG_PORT}:${DEBUG_PORT}"
+    environment:
+      SPRING_APPLICATION_JSON: '{
+        "spring.data.mongodb.uri": "mongodb://${MONGODB_ROOT_USERNAME}:${MONGODB_ROOT_PASSWORD}@mongodb:${MONGODB_DOCKER_PORT}/${MONGODB_DATABASE}?authSource=admin",
+        "spring.data.mongodb.username": "${MONGODB_ROOT_USERNAME}",
+        "spring.data.mongodb.password": "${MONGODB_ROOT_PASSWORD}"
+      }'
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+
+volumes:
+  mongodb_data:

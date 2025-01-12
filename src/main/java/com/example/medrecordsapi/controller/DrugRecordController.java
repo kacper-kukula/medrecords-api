@@ -33,7 +33,7 @@ public class DrugRecordController {
 
     @Operation(summary = "Search drug records",
             description = "Search for drug records based on manufacturer and/or brand name. "
-                    + "Parameter can only contain part of the full name. "
+                    + "Parameter can contain part or the full name. "
                     + "Pagination is supported via the 'page' and 'size' parameters.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully fetched drug records"),

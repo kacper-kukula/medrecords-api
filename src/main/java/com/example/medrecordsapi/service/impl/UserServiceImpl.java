@@ -9,11 +9,13 @@ import com.example.medrecordsapi.model.User;
 import com.example.medrecordsapi.repository.UserRepository;
 import com.example.medrecordsapi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private static final String REGISTRATION_FAIL_MESSAGE = "Can't register this user";
@@ -25,7 +27,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto registerUser(UserRegistrationRequestDto requestDto)
             throws RegistrationException {
+        log.info("Attempting to register user with email: {}", requestDto.email());
+
         if (userRepository.findByEmailIgnoreCase(requestDto.email()).isPresent()) {
+            log.error("Registration failed: User with email {} already exists",
+                    requestDto.email());
             throw new RegistrationException(REGISTRATION_FAIL_MESSAGE);
         }
 
@@ -35,6 +41,7 @@ public class UserServiceImpl implements UserService {
 
         User savedUser = userRepository.save(user);
 
+        log.info("User with email {} successfully registered", requestDto.email());
         return userMapper.toDto(savedUser);
     }
 }

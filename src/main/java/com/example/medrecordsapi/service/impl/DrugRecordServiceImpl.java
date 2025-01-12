@@ -13,11 +13,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DrugRecordServiceImpl implements DrugRecordService {
 
     private static final String MANUFACTURER_NAME_FIELD = "openfda.manufacturer_name:";
@@ -28,7 +30,6 @@ public class DrugRecordServiceImpl implements DrugRecordService {
     private static final String PRODUCT_NDC_NODE_PATH = "product_ndc";
     private static final String MANUFACTURER_NAME_NODE_PATH = "manufacturer_name";
     private static final String SUBSTANCE_NAME_NODE_PATH = "substance_name";
-    private static final String SEARCH_PARAM_NAME = "search";
     private static final String AND_OPERATOR = "+AND+";
     private static final int PAGE_SIZE_ONE = 1;
     private static final int INDEX_ZERO = 0;
@@ -42,6 +43,9 @@ public class DrugRecordServiceImpl implements DrugRecordService {
     @Override
     public JsonNode searchDrugRecords(String manufacturerName, String brandName,
                                       int page, int size) throws JsonProcessingException {
+        log.info("Searching for drug records with manufacturer: {}, brand: {}, page: {}, "
+                + "size: {}", manufacturerName, brandName, page, size);
+
         StringBuilder searchQuery = new StringBuilder()
                 .append(MANUFACTURER_NAME_FIELD)
                 .append(manufacturerName);
@@ -53,13 +57,18 @@ public class DrugRecordServiceImpl implements DrugRecordService {
         }
 
         String rawJson = fdaApiService.fetchDrugData(
-                SEARCH_PARAM_NAME, searchQuery.toString(), page, size);
-        return objectMapper.readTree(rawJson);
+                "", searchQuery.toString(), page, size);
+        JsonNode result = objectMapper.readTree(rawJson);
+        log.info("Search result size: {}", result.path(RESULTS_NODE_PATH).size());
+
+        return result;
     }
 
     @Override
     public DrugRecordResponseDto saveDrugRecord(String applicationNumber)
             throws JsonProcessingException {
+        log.info("Attempting to save drug record with application number: {}", applicationNumber);
+
         String rawJson = fdaApiService.fetchDrugData(APPLICATION_NUMBER_FIELD, applicationNumber,
                 PAGE_SIZE_ONE, PAGE_SIZE_ONE);
 
@@ -78,20 +87,35 @@ public class DrugRecordServiceImpl implements DrugRecordService {
                 substanceName, productNumbers);
         DrugRecord savedDrugRecord = drugRecordRepository.save(drugRecord);
 
+        log.info("Drug record saved with application number: {}",
+                savedDrugRecord.getApplicationNumber());
+
         return drugRecordMapper.toDto(savedDrugRecord);
     }
 
     @Override
     public List<DrugRecordResponseDto> getAllDrugRecords(Pageable pageable) {
-        return drugRecordRepository.findAll(pageable).stream()
+        log.info("Fetching all drug records with pagination: {}", pageable);
+
+        List<DrugRecordResponseDto> drugRecords = drugRecordRepository.findAll(pageable).stream()
                 .map(drugRecordMapper::toDto)
                 .toList();
+
+        log.info("Fetched {} drug records", drugRecords.size());
+
+        return drugRecords;
     }
 
     @Override
     public DrugRecordResponseDto findDrugRecordByApplicationNumber(String applicationNumber) {
+        log.info("Searching for drug record with application number: {}", applicationNumber);
+
         return drugRecordRepository.findByApplicationNumber(applicationNumber)
                 .map(drugRecordMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(NO_DRUGS_FOUND_ERROR));
+                .orElseThrow(() -> {
+                    log.error("Drug record not found for application number: {}",
+                            applicationNumber);
+                    return new EntityNotFoundException(NO_DRUGS_FOUND_ERROR);
+                });
     }
 }

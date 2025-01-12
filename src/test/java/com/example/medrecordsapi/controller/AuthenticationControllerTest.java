@@ -9,7 +9,6 @@ import com.example.medrecordsapi.dto.user.UserRegistrationRequestDto;
 import com.example.medrecordsapi.dto.user.UserResponseDto;
 import com.example.medrecordsapi.model.Role;
 import com.example.medrecordsapi.model.User;
-import com.example.medrecordsapi.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,9 +46,6 @@ public class AuthenticationControllerTest {
     private MongoTemplate mongoTemplate;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @BeforeEach
@@ -60,7 +56,7 @@ public class AuthenticationControllerTest {
     private void createAndSaveUser(String email, String password, String first, String last,
                                    Role role) {
         User user = new User(null, email, passwordEncoder.encode(password), first, last, role);
-        userRepository.save(user);
+        mongoTemplate.save(user);
     }
 
     @Nested

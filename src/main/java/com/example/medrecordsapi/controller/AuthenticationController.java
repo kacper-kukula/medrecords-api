@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/auth")
+@Slf4j
 public class AuthenticationController {
 
     private final UserService userService;
@@ -42,7 +44,11 @@ public class AuthenticationController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponseDto registerUser(@RequestBody @Valid UserRegistrationRequestDto requestDto)
             throws RegistrationException {
-        return userService.registerUser(requestDto);
+        log.info("Received request to register a new user with email: {}", requestDto.email());
+        UserResponseDto response = userService.registerUser(requestDto);
+        log.info("User registered successfully with ID: {}", response.id());
+
+        return response;
     }
 
     @Operation(summary = "Login an existing user",
@@ -55,6 +61,10 @@ public class AuthenticationController {
                     description = "Invalid credentials")})
     @PostMapping("/login")
     public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto requestDto) {
-        return authenticationService.authenticate(requestDto);
+        log.info("Received login request for email: {}", requestDto.email());
+        UserLoginResponseDto response = authenticationService.authenticate(requestDto);
+        log.info("User successfully authenticated with email: {}", requestDto.email());
+
+        return response;
     }
 }

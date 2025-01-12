@@ -6,6 +6,7 @@ import com.example.medrecordsapi.exception.custom.RegistrationException;
 import io.jsonwebtoken.ExpiredJwtException;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -20,6 +21,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
+@Slf4j
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
@@ -32,6 +34,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 .map(this::getErrorMessage)
                 .toList();
 
+        log.warn("Validation errors: {}", mappedErrors);
+
         ErrorResponse body = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST,
@@ -42,6 +46,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(RegistrationException.class)
     public ResponseEntity<ErrorResponse> handleRegistrationException(RegistrationException ex) {
+        log.error("Registration error: {}", ex.getMessage());
+
         ErrorResponse body = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST,
@@ -52,6 +58,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException ex) {
+        log.warn("Bad credentials: {}", ex.getMessage());
+
         ErrorResponse body = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.UNAUTHORIZED,
@@ -63,6 +71,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleEntityNotFoundException(
             EntityNotFoundException ex) {
+        log.info("Entity not found: {}", ex.getMessage());
+
         ErrorResponse body = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND,
@@ -74,6 +84,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<ErrorResponse> handleExpiredJwtException(
             ExpiredJwtException ex) {
+        log.warn("Expired JWT token: {}", ex.getMessage());
+
         ErrorResponse body = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.UNAUTHORIZED,
@@ -85,6 +97,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     @ExceptionHandler(DrugRecordNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleDrugRecordNotFoundException(
             DrugRecordNotFoundException ex) {
+        log.info("Drug record not found: {}", ex.getMessage());
+
         ErrorResponse body = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND,
@@ -95,6 +109,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex) {
+        log.error("Unexpected error: {}", ex.getMessage(), ex);
+
         ErrorResponse body = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR,

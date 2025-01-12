@@ -21,8 +21,7 @@ public class AuthenticationService {
         log.info("Attempting to authenticate user with email: {}", request.email());
 
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email(), request.password())
-        );
+                new UsernamePasswordAuthenticationToken(request.email(), request.password()));
         String token = jwtUtil.generateToken(authentication.getName());
 
         log.info("User authenticated successfully, token generated for email: {}",

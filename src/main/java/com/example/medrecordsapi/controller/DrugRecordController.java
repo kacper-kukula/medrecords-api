@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Drug Records",
         description = "Operations related to drug records")
 @RestController
-@RequestMapping("/drug-records")
 @RequiredArgsConstructor
+@RequestMapping("/drug-records")
 @Slf4j
 public class DrugRecordController {
 

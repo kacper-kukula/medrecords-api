@@ -9,5 +9,4 @@ public class MedrecordsApiApplication {
     public static void main(String[] args) {
         SpringApplication.run(MedrecordsApiApplication.class, args);
     }
-
 }

@@ -28,7 +28,6 @@ public class DrugRecordServiceImpl implements DrugRecordService {
     private static final String PRODUCT_NDC_NODE_PATH = "product_ndc";
     private static final String MANUFACTURER_NAME_NODE_PATH = "manufacturer_name";
     private static final String SUBSTANCE_NAME_NODE_PATH = "substance_name";
-    private static final String SEARCH_PARAM_NAME = "search";
     private static final String AND_OPERATOR = "+AND+";
     private static final int PAGE_SIZE_ONE = 1;
     private static final int INDEX_ZERO = 0;

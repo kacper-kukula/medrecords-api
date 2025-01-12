@@ -69,6 +69,8 @@ JWT_SECRET_STRING=superLong12345AndStrong12345SecretString
 5. Build and run the application using Docker: `docker-compose up --build`
 6. Access the API documentation at Swagger UI: `http://localhost:8080/api/swagger-ui/index.html#/`.
 
+If you want to run the tests in your IDE, running `mvn clean test` or `mvn clean package` might produce error if your `JWT_SECRET_STRING` environmental variable isn't set. Set it on your own preference or simply attach it in front of the `mvn clean package` command: `JWT_SECRET_STRING=superLong12345AndStrong12345SecretString mvn clean package`.
+
 You can now access the endpoints using `Swagger` or `Postman`. To access the functionality, you must first register, and you will be granted `User` role.
 
 After logging in, you receive a `Bearer Token` which you must then provide as authorization to access the endpoints. Another approach on Swagger UI and Postman would be to simply enter your email and password in `Basic Auth` Auth Type.

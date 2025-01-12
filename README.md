@@ -20,7 +20,7 @@ The application is built using the MVC architecture and integrates with external
 </p>
 <br />
 
-- **As well as**: JWT, Jackson, Lombok, MapStruct, Spring Security, SLF4J, Embedded Mongo
+- **As well as**: JWT, Jackson, Lombok, MapStruct, Spring Security, SLF4J, Embedded Mongo, JaCoCo
 
 ## Unique Functionalities
 
@@ -42,7 +42,7 @@ The application is built using the MVC architecture and integrates with external
 <p align="center">
 <img src="https://i.imgur.com/vI1X9sF.png" alt="Coverage"/>
   
-- 87% Test Coverage
+- 87% Test Coverage (JaCoCo)
 </p>
 
 ## Getting Started

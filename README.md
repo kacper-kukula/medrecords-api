@@ -69,7 +69,7 @@ JWT_SECRET_STRING=superLong12345AndStrong12345SecretString
 4. Ensure Docker Desktop is running.
 5. Ensure MongoDB is running.
 6. Build and run the application using Docker: `docker-compose up --build` (must be in root project directory).
-7. Access the API documentation at Swagger UI: `http://localhost:8080/api/swagger-ui/index.html#/`.
+7. Access the API documentation at Swagger UI: `http://localhost:8080/api/v1/swagger-ui/index.html#/`.
 
 You can now access the endpoints using `Swagger` or `Postman`. To access the functionality, you must first register, and you will be granted `User` role.
 

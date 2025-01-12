@@ -45,9 +45,9 @@ The application is built using the MVC architecture and integrates with external
 - 87% Test Coverage (JaCoCo)
 </p>
 
-## Getting Started
+## Getting Started (Windows)
 
-1. Make sure to install [Maven](https://maven.apache.org/download.cgi), [Docker](https://www.docker.com/products/docker-desktop/), [JDK 17+](https://www.oracle.com/pl/java/technologies/downloads/)
+1. Make sure to install [Maven](https://maven.apache.org/download.cgi), [Docker](https://www.docker.com/products/docker-desktop/), [JDK 17+](https://www.oracle.com/pl/java/technologies/downloads/), [MongoDB](https://www.mongodb.com/try/download/community)
 2. Clone the repository.
 3. Configure the `.env` file with your database credentials and ports and add it to root project directory. Working example:
 ```
@@ -65,9 +65,11 @@ JWT_SECRET_STRING=superLong12345AndStrong12345SecretString
 ```
 (optionally you can obtain API Key from [FDA](https://open.fda.gov/apis/authentication/) offical site and put it in the above `.env` file as `FDA_API_KEY=yourkeyhere`. It will let you do significantly more requests per day, but will work totally fine without it.)
 
+4. We need to build the project using Maven first. It is essential to set up the environmental variable for `JWT_SECRET_STRING` as it's used for tests to succesfully build the project. You can do that on PowerShell with following command (ensure you're in the project root directory): `$env:JWT_SECRET_STRING = "your_secret_value"` and then `mvn clean package` or on Unix based shells just simply put it in one command: `JWT_SECRET_STRING=superLong12345AndStrong12345SecretString mvn clean package`. The string is only used for tests, later you can use your own in the .env file.
 4. Ensure Docker Desktop is running.
-5. Build and run the application using Docker: `docker-compose up --build`
-6. Access the API documentation at Swagger UI: `http://localhost:8080/api/swagger-ui/index.html#/`.
+5. Ensure MongoDB is running.
+6. Build and run the application using Docker: `docker-compose up --build` (must be in root project directory).
+7. Access the API documentation at Swagger UI: `http://localhost:8080/api/swagger-ui/index.html#/`.
 
 If you want to run the tests in your IDE, running `mvn clean test` or `mvn clean package` might produce error if your `JWT_SECRET_STRING` environmental variable isn't set. Set it on your own preference or simply attach it in front of the `mvn clean package` command: `JWT_SECRET_STRING=superLong12345AndStrong12345SecretString mvn clean package`.
 

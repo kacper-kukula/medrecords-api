@@ -71,4 +71,4 @@ JWT_SECRET_STRING=superLong12345AndStrong12345SecretString
 
 You can now access the endpoints using `Swagger` or `Postman`. To access the functionality, you must first register, and you will be granted `User` role.
 
-After logging in, you receive a `Bearer Token` which you must then provide as authorization to access the endpoints.
+After logging in, you receive a `Bearer Token` which you must then provide as authorization to access the endpoints. Another approach on Swagger UI and Postman would be to simply enter your email and password in `Basic Auth` Auth Type.
